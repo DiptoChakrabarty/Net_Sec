@@ -1,6 +1,7 @@
 import socket
 import re
 import sys
+import itertools
 
 #Connect to ftp server
 def connection(ip,user,passwd):
@@ -27,4 +28,10 @@ def connection(ip,user,passwd):
     return data
 
 
-    
+alpha="aqzwsxedcrfvtgbyhnujmikolp"
+
+alpha=list(i for i in aplha)
+
+user="admin"
+
+passwd=list
