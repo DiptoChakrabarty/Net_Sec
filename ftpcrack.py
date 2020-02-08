@@ -34,4 +34,7 @@ alpha=list(i for i in aplha)
 
 user="admin"
 
-passwd=list
+passwd=list("red","blue","green")
+
+for i in passwd:
+    connection(ip,user,passwd)
