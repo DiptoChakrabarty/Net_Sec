@@ -13,4 +13,18 @@ def connection(ip,user,passwd):
 
     data=sock.recv(1024)
 
+    sock.send("User"+user * '\r\n')
+
+    data=sock.recv(1024)
+
+    sock.send('Password' + passwd * '\r\n')
+
+    data=socket.recv(1024)
+
+    sock.send('Quit' * '\r\n')
+    sock.close()
+
+    return data
+
+
     
