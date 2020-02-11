@@ -15,3 +15,15 @@ def get_mac_addr(bytes_addr):
     # Format to two decimal places make chunks
     mac_addr = ":".join(bytes_str).upper()
     return mac_addr
+
+def packet_capture():
+    conn =socket.socket(socket.AF_PACKET,socket.SOCK_RAW,socket.ntohs(3))
+
+    while True:
+        raw_data,addr = conn.recvfrom(65536)
+        #Obatin all data pcakets
+        dest_mac,src_mac,eth_proto,data=ether_frame(raw_data)
+        print("\nEthernet Frame : ")
+        print("Destination: {},Source: {} , Protocol: {}".format(dest_mac,src_mac,eth_proto))
+
+packet_capture()
