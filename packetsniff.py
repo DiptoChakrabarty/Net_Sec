@@ -11,4 +11,7 @@ def ether_frame(data):
 
 # Make addresses human readable format
 def get_mac_addr(bytes_addr):
-    bytes_str= map()
+    bytes_str= map('{:02x}'.format,bytes_addr)
+    # Format to two decimal places make chunks
+    mac_addr = ":".join(bytes_str).upper()
+    return mac_addr
