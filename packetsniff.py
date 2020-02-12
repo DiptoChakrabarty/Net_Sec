@@ -6,6 +6,8 @@ import textwrap
 
 def ether_frame(data):
     dest_mac,src_mac,proto=struct.unpack('! 6s 6s H',data[:14])
+    print("***********")
+    print(dest_mac,src_mac)
     return get_mac_addr(dest_mac),get_mac_addr(src_mac),socket.htons(proto),data[:14]
 # Obtain Mac Addresses from data 
 
@@ -25,5 +27,13 @@ def packet_capture():
         dest_mac,src_mac,eth_proto,data=ether_frame(raw_data)
         print("\nEthernet Frame : ")
         print("Destination: {},Source: {} , Protocol: {}".format(dest_mac,src_mac,eth_proto))
+
+#Unpack IPv4 packets
+def unpack_packets(data):
+    version_header_length=data[0]
+    version=version_header_length >> 4
+    header_length = (version_header_length & 15)*4
+    ttl,proto,src,target = struct.unpack('! 8x B B 2x 4s 4s',data[:20])
+
 
 packet_capture()
