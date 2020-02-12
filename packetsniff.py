@@ -32,7 +32,9 @@ def packet_capture():
 def unpack_packets(data):
     version_header_length=data[0]
     version=version_header_length >> 4
+    print(version)
     header_length = (version_header_length & 15)*4
+    print(header_length)
     ttl,proto,src,target = struct.unpack('! 8x B B 2x 4s 4s',data[:20])
     print("///////////////")
     print(ttl,proto,src,target)
@@ -47,5 +49,21 @@ def ipv4(addr):
 def icmp_packet(data):
     icmp,code,checksum = struct.unpack('! B B H',data[:4])
     return icmp_type,code,checksum,data[4:]
+
+#Unpack TCP packets
+def tcp_packet(data):
+    src_port,dest_port,sequence,acknowledgement,offset_reserved_flag = struct.unpack('! H H  L L H',data[:14])
+    offset=(offset_reserved_flag >> 12)*4
+    #Getting the tcp flags
+    flag_urg =(offset_reserved_flag & 32) >> 5
+    flag_ack =(offset_reserved_flag & 16) >> 5
+    flag_psh =(offset_reserved_flag & 8) >> 5
+    flag_rst =(offset_reserved_flag & 4) >> 5
+    flag_syn =(offset_reserved_flag & 2) >> 5
+    flag_fin =(offset_reserved_flag & 1) 
+    return src_port,dest_port,sequence,acknowledgement,flag_urg,flag_ack,flag_psh,flag_rst,flag_syn,flag_fin,data[offset:]
+
+
+
 
 packet_capture()
