@@ -27,6 +27,17 @@ def packet_capture():
         dest_mac,src_mac,eth_proto,data=ether_frame(raw_data)
         print("\nEthernet Frame : ")
         print("Destination: {},Source: {} , Protocol: {}".format(dest_mac,src_mac,eth_proto))
+        # 8 for IPv4
+        if eth_proto == 8:
+            version,header_length,ttl,proto,src,target,data = unpack_packets(data)
+            print("Ipv4 Packets")
+            print("Version",version)
+            print("Header Length",header_length)
+            print("TTl",ttl)
+            print("Protocol",proto)
+            print("Source",source)
+            print("Target",target)
+
 
 #Unpack IPv4 packets
 def unpack_packets(data):
@@ -62,6 +73,8 @@ def tcp_packet(data):
     flag_syn =(offset_reserved_flag & 2) >> 5
     flag_fin =(offset_reserved_flag & 1) 
     return src_port,dest_port,sequence,acknowledgement,flag_urg,flag_ack,flag_psh,flag_rst,flag_syn,flag_fin,data[offset:]
+
+def udp_unpack(data):
 
 
 
