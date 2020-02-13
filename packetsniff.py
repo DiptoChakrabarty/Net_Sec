@@ -38,6 +38,30 @@ def packet_capture():
             print("Source",source)
             print("Target",target)
 
+            # protocol 1 is for icmp data packets
+            if proto == 1:
+                icmp_type, code ,checksum,data = icmp_packet(data)
+                print("Icmp Packet")
+                print("Icmp Packet type",icmp_packet)
+                print("Code",code)
+                print("CheckSum",checksum)
+            # Tcp protocol has 6
+            elif proto == 6:
+                src_port,dest_port,sequence,acknowledgement,flag_urg,flag_ack,flag_psh,flag_rst,flag_syn,flag_fin,data = tcp_packet(data)
+                print("Tcp Packet")
+                print(" Source and Destination ports : ",src_port,dest_port)
+                print("Sequence and Acknowledgement",sequence,acknowledgement)
+                print("Flags")
+                print("URG : {} ACK : {} PSH : {} RST : {} SYN : {}  FIN : {}".format(flag_urg,flag_ack,flag_psh,flag_rst,flag_syn,flag_fin))
+                print("Data Obtained")
+                print(format_multi_line(data))
+            # UDP 
+            elif proto == 17:
+                src_port,dest_port,size,data = udp_segment(data)
+                print("UDP")
+                print("Source and Destination",src_port,dest_port)
+                print("Size of Data",size)
+
 
 #Unpack IPv4 packets
 def unpack_packets(data):
@@ -87,7 +111,7 @@ def format_multi_line(prefix,string,size=80):
         if size % 2:
             size -= 1
     return '\n'.join([prefix + line for line in textwrap.wrap(string,size)])
-    
+
 
 
 packet_capture()
