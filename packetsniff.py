@@ -8,7 +8,7 @@ def ether_frame(data):
     dest_mac,src_mac,proto=struct.unpack('! 6s 6s H',data[:14])
     print("***********")
     print(dest_mac,src_mac)
-    return get_mac_addr(dest_mac),get_mac_addr(src_mac),socket.htons(proto),data[:14]
+    return get_mac_addr(dest_mac),get_mac_addr(src_mac),socket.htons(proto),data[:20]
 # Obtain Mac Addresses from data 
 
 # Make addresses human readable format
@@ -22,31 +22,32 @@ def packet_capture():
     conn =socket.socket(socket.AF_PACKET,socket.SOCK_RAW,socket.ntohs(3))
 
     while True:
-        raw_data,addr = conn.recvfrom(65536)
-        #Obatin all data pcakets
+        raw_data,addr = conn.recvfrom(65535)
+        #Obatin all data packets
         dest_mac,src_mac,eth_proto,data=ether_frame(raw_data)
+        print(data)
         print("\nEthernet Frame : ")
         print("Destination: {},Source: {} , Protocol: {}".format(dest_mac,src_mac,eth_proto))
         # 8 for IPv4
         if eth_proto == 8:
-            version,header_length,ttl,proto,src,target,data = unpack_packets(data)
+            version,header_length,ttl,proto,src,target,new_data = unpack_packets(data[:20])
             print("Ipv4 Packets")
             print("Version",version)
             print("Header Length",header_length)
             print("TTl",ttl)
             print("Protocol",proto)
-            print("Source",source)
+            print("Source",src)
             print("Target",target)
 
             # protocol 1 is for icmp data packets
-            if proto == 1:
+            if eth_proto == 1:
                 icmp_type, code ,checksum,data = icmp_packet(data)
                 print("Icmp Packet")
                 print("Icmp Packet type",icmp_packet)
                 print("Code",code)
                 print("CheckSum",checksum)
             # Tcp protocol has 6
-            elif proto == 6:
+            elif eth_proto == 6:
                 src_port,dest_port,sequence,acknowledgement,flag_urg,flag_ack,flag_psh,flag_rst,flag_syn,flag_fin,data = tcp_packet(data)
                 print("Tcp Packet")
                 print(" Source and Destination ports : ",src_port,dest_port)
@@ -56,7 +57,7 @@ def packet_capture():
                 print("Data Obtained")
                 print(format_multi_line(data))
             # UDP 
-            elif proto == 17:
+            elif eth_proto == 17:
                 src_port,dest_port,size,data = udp_segment(data)
                 print("UDP")
                 print("Source and Destination",src_port,dest_port)
@@ -68,9 +69,14 @@ def unpack_packets(data):
     version_header_length=data[0]
     version=version_header_length >> 4
     print(version)
+    print(data,len(data))
     header_length = (version_header_length & 15)*4
     print(header_length)
-    ttl,proto,src,target = struct.unpack('! 8x B B 2x 4s 4s',data[:20])
+    if(len(data)>20):
+        x=20
+    else:
+        x=-1
+    ttl,proto,src,target = struct.unpack('! 8x B B 2x 4s 4s',data)
     print("///////////////")
     print(ttl,proto,src,target)
     return version,header_length,ttl,proto,ipv4(src),ipv4(target),data[header_length:]
