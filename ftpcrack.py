@@ -16,20 +16,20 @@ def connection(ip,user,passwd):
 
     print("Connected")
 
-    data=sock.recv(1024).decode()
+    data=sock.recv(4096).decode()
     print(data)
 
     sock.send(("Username:"+user).encode() )
     print("Username")
     print(data)
 
-    data=sock.recv(1024).decode()
+    data=sock.recv(4096).decode()
 
-    sock.send(('Password' + passwd).encode())
+    sock.send(('Password:' + passwd).encode())
     print("Password")
     print(data)
 
-    data=socket.recv(1024).decode()
+    data=socket.recv(4096).decode()
 
     sock.send(('Quit').encode())
     print("Quit")
@@ -42,11 +42,17 @@ alpha="aqzwsxedcrfvtgbyhnujmikolp"
 
 #alpha=list(i for i in aplha)
 
-user="admin"
+user="chuck"
 
-passwd=["red","blue","green"]
+passwd=["red","blue","green","redhat"]
 
-ip="192.168"
+ip="192.168.43.3"
 
-for i in passwd:
-    print(connection(ip,user,i))
+#for i in passwd:
+    #print(connection(ip,user,"redhat"))
+
+from ftplib import FTP
+
+#domain name or server ip:
+ftp = FTP(ip)
+ftp.login(user= user, passwd = 'redhat')
