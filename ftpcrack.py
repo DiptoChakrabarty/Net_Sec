@@ -8,17 +8,17 @@ def connection(ip,user,passwd):
 
     sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-    print("Connecting to ip" + ip  +"with user " + user + "password " +passwd)
+    print("Connecting to ip " + ip  +"with user " + user + " password " +passwd)
 
-    sock.connect(('192.168.0.1',21))
-
-    data=sock.recv(1024)
-
-    sock.send("User"+user * '\r\n')
+    sock.connect((ip,21))
 
     data=sock.recv(1024)
 
-    sock.send('Password' + passwd * '\r\n')
+    sock.send(("Username"+user).encode() )
+
+    data=sock.recv(1024)
+
+    sock.send(('Password' + passwd).encode())
 
     data=socket.recv(1024)
 
@@ -30,11 +30,13 @@ def connection(ip,user,passwd):
 
 alpha="aqzwsxedcrfvtgbyhnujmikolp"
 
-alpha=list(i for i in aplha)
+#alpha=list(i for i in aplha)
 
 user="admin"
 
-passwd=list("red","blue","green")
+passwd=["red","blue","green"]
+
+ip="192.168."
 
 for i in passwd:
-    connection(ip,user,passwd)
+    connection(ip,user,i)
