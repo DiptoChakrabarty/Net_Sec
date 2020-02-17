@@ -6,23 +6,33 @@ import itertools
 #Connect to ftp server
 def connection(ip,user,passwd):
 
-    sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    #sock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    sock= socket.socket()
 
     print("Connecting to ip " + ip  +"with user " + user + " password " +passwd)
 
     sock.connect((ip,21))
+    
 
-    data=sock.recv(1024)
+    print("Connected")
 
-    sock.send(("Username"+user).encode() )
+    data=sock.recv(1024).decode()
+    print(data)
 
-    data=sock.recv(1024)
+    sock.send(("Username:"+user).encode() )
+    print("Username")
+    print(data)
+
+    data=sock.recv(1024).decode()
 
     sock.send(('Password' + passwd).encode())
+    print("Password")
+    print(data)
 
-    data=socket.recv(1024)
+    data=socket.recv(1024).decode()
 
-    sock.send('Quit' * '\r\n')
+    sock.send(('Quit').encode())
+    print("Quit")
     sock.close()
 
     return data
@@ -36,7 +46,7 @@ user="admin"
 
 passwd=["red","blue","green"]
 
-ip="192.168."
+ip="192.168"
 
 for i in passwd:
-    connection(ip,user,i)
+    print(connection(ip,user,i))
